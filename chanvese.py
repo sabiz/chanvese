@@ -31,6 +31,8 @@
 
 import numpy as np
 import scipy.ndimage as nd
+import imageio
+import cv2
 import matplotlib.pyplot as plt
 
 
@@ -254,7 +256,7 @@ def sussman_sign(D):
 
 # Convergence Test
 def convergence(p_mask, n_mask, thresh, c):
-    diff = p_mask - n_mask
+    diff = np.subtract(p_mask, n_mask, dtype=np.float64)
     n_diff = np.sum(np.abs(diff))
     if n_diff < thresh:
         c = c + 1
@@ -264,8 +266,9 @@ def convergence(p_mask, n_mask, thresh, c):
 
 
 if __name__ == "__main__":
-    img = nd.imread('brain.png', flatten=True)
+    img = imageio.imread('brain.png')
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     mask = np.zeros(img.shape)
     mask[20:100, 20:100] = 1
 
-    chanvese(img, mask, max_its=1000, display=True, alpha=1.0)
+    chanvese(img, mask, max_its=10000, display=True, alpha=1.0)
